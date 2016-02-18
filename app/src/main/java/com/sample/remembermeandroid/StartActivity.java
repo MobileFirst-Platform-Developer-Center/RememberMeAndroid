@@ -25,7 +25,7 @@ public class StartActivity extends AppCompatActivity {
         WLClient.createInstance(this);
 
         //Initialize the challenge handler
-        UserAuthChallengeHandler.createAndRegister();
+        UserLoginChallengeHandler.createAndRegister();
 
         //Handle auto-login success
         loginSuccessReceiver = new BroadcastReceiver() {

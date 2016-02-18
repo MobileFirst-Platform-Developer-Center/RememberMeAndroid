@@ -23,8 +23,8 @@ import org.json.JSONObject;
 /**
  * Created by nathanh on 17/02/16.
  */
-public class UserAuthChallengeHandler extends WLChallengeHandler {
-    private static String securityCheckName = "UserAuthSecurityCheck";
+public class UserLoginChallengeHandler extends WLChallengeHandler {
+    private static String securityCheckName = "UserLogin";
     private int remainingAttempts = -1;
     private String errorMsg = "";
     private Context context;
@@ -32,7 +32,7 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
 
     private LocalBroadcastManager broadcastManager;
 
-    private UserAuthChallengeHandler() {
+    private UserLoginChallengeHandler() {
         super(securityCheckName);
         context = WLClient.getInstance().getContext();
         broadcastManager = LocalBroadcastManager.getInstance(context);
@@ -75,8 +75,8 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
 
     }
 
-    public static UserAuthChallengeHandler createAndRegister(){
-        UserAuthChallengeHandler challengeHandler = new UserAuthChallengeHandler();
+    public static UserLoginChallengeHandler createAndRegister(){
+        UserLoginChallengeHandler challengeHandler = new UserLoginChallengeHandler();
         WLClient.getInstance().registerChallengeHandler(challengeHandler);
         return challengeHandler;
     }

@@ -93,16 +93,16 @@ public class ProtectedActivity extends AppCompatActivity {
         logoutReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent itent = new Intent(_this, StartActivity.class);
-                _this.startActivity(itent);
+                Intent login = new Intent(_this, LoginActivity.class);
+                _this.startActivity(login);
             }
         };
 
         loginRequiredReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent itent = new Intent(_this, LoginActivity.class);
-                _this.startActivity(itent);
+                Intent login = new Intent(_this, LoginActivity.class);
+                _this.startActivity(login);
             }
         };
     }

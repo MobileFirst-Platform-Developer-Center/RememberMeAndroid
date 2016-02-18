@@ -28,6 +28,7 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
     private int remainingAttempts = -1;
     private String errorMsg = "";
     private Context context;
+    private boolean isChallenged = false;
 
     private LocalBroadcastManager broadcastManager;
 
@@ -84,6 +85,7 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
     @Override
     public void handleChallenge(JSONObject jsonObject) {
         Log.d(securityCheckName, "Challenge Received");
+        isChallenged = true;
         try {
             if(jsonObject.isNull("errorMsg")){
                 errorMsg = "";
@@ -109,6 +111,7 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
     @Override
     public void handleFailure(JSONObject error) {
         super.handleFailure(error);
+        isChallenged = false;
         if(error.isNull("failure")){
             errorMsg = "Failed to login. Please try again later.";
         }
@@ -129,6 +132,7 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
     @Override
     public void handleSuccess(JSONObject identity) {
         super.handleSuccess(identity);
+        isChallenged = false;
         try {
             //Save the current user
             SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -146,7 +150,23 @@ public class UserAuthChallengeHandler extends WLChallengeHandler {
     }
 
     public void login(JSONObject credentials){
-        submitChallengeAnswer(credentials);
+        if(isChallenged){
+            submitChallengeAnswer(credentials);
+        }
+        else{
+            WLAuthorizationManager.getInstance().login(securityCheckName, credentials, new WLLoginResponseListener() {
+                @Override
+                public void onSuccess() {
+                    Log.d(securityCheckName, "Login Preemptive Success");
+
+                }
+
+                @Override
+                public void onFailure(WLFailResponse wlFailResponse) {
+                    Log.d(securityCheckName, "Login Preemptive Failure");
+                }
+            });
+        }
     }
 
     public void autoLogin(){

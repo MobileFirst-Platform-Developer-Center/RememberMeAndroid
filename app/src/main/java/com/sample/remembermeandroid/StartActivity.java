@@ -46,6 +46,11 @@ public class StartActivity extends AppCompatActivity {
                 _this.startActivity(login);
             }
         };
+
+        //Try to auto-login
+        Intent intent = new Intent();
+        intent.setAction(Constants.ACTION_LOGIN_AUTO);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
@@ -55,11 +60,6 @@ public class StartActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(loginSuccessReceiver, new IntentFilter(Constants.ACTION_LOGIN_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_REQUIRED));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_FAILURE));
-
-        //Try to auto-login
-        Intent intent = new Intent();
-        intent.setAction(Constants.ACTION_LOGIN_AUTO);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
     }
 

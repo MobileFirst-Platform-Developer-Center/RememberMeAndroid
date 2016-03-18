@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         //Display remaining attempts
                         if(intent.getIntExtra("remainingAttempts",-1) > -1) {
-                            remainingAttemptsDisplay.setText("Remaning attempts: " + intent.getIntExtra("remainingAttempts",-1));
+                            remainingAttemptsDisplay.setText("Remaining attempts: " + intent.getIntExtra("remainingAttempts",-1));
                         }
                     }
                 };

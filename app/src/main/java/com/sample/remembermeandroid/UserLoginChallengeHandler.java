@@ -186,6 +186,9 @@ public class UserLoginChallengeHandler extends WLChallengeHandler {
             @Override
             public void onSuccess(AccessToken accessToken) {
                 Log.d(securityCheckName, "auto login success");
+                Intent intent = new Intent();
+                intent.setAction(Constants.ACTION_LOGIN_AUTO_SUCCESS);
+                broadcastManager.sendBroadcast(intent);
             }
 
             @Override

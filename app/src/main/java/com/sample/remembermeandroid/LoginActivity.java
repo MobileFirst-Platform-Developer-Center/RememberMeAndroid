@@ -123,9 +123,9 @@ public class LoginActivity extends AppCompatActivity {
         loginSuccessReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(DEBUG_NAME, "loginSuccessReceiver");
                 //Go to the protected area
-                Intent openLogin = new Intent(_this, ProtectedActivity.class);
-                _this.startActivity(openLogin);
+                finish();
             }
         };
 

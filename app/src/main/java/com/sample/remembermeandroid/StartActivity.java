@@ -22,16 +22,19 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.worklight.wlclient.api.WLClient;
 
 public class StartActivity extends AppCompatActivity {
     private StartActivity _this;
     private BroadcastReceiver loginSuccessReceiver, loginRequiredReceiver;
+    private final String DEBUG_NAME = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(DEBUG_NAME, "onCreate");
         setContentView(R.layout.activity_start);
 
         _this = this;
@@ -46,6 +49,7 @@ public class StartActivity extends AppCompatActivity {
         loginSuccessReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(DEBUG_NAME, "loginSuccessReceiver");
                 //Go to the protected area
                 Intent openProtected = new Intent(_this, ProtectedActivity.class);
                 _this.startActivity(openProtected);
@@ -56,6 +60,7 @@ public class StartActivity extends AppCompatActivity {
         loginRequiredReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(DEBUG_NAME, "loginRequiredReceiver");
                 //Open login screen
                 Intent login = new Intent(_this, LoginActivity.class);
                 _this.startActivity(login);
@@ -66,13 +71,15 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setAction(Constants.ACTION_LOGIN_AUTO);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(DEBUG_NAME, "onStart");
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(loginSuccessReceiver, new IntentFilter(Constants.ACTION_LOGIN_SUCCESS));
+        LocalBroadcastManager.getInstance(this).registerReceiver(loginSuccessReceiver, new IntentFilter(Constants.ACTION_LOGIN_AUTO_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_REQUIRED));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_FAILURE));
 
@@ -80,8 +87,20 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        Log.d(DEBUG_NAME, "onStop");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(DEBUG_NAME, "onNewIntent");
+
+        //Try to auto-login
+        Intent autoLogin = new Intent();
+        autoLogin.setAction(Constants.ACTION_LOGIN_AUTO);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(autoLogin);
     }
 }

@@ -30,7 +30,7 @@ limitations under the License.
         <activity android:name=".LoginActivity"/>
         <activity android:name="com.worklight.wlclient.ui.UIActivity" />
         <activity android:name=".ProtectedActivity" />
-        <activity android:name=".StartActivity">
+        <activity android:name=".StartActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

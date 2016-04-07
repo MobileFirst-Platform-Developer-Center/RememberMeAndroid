@@ -86,14 +86,6 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        Log.d(DEBUG_NAME, "onStop");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
-        super.onStop();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.d(DEBUG_NAME, "onNewIntent");
@@ -103,4 +95,13 @@ public class StartActivity extends AppCompatActivity {
         autoLogin.setAction(Constants.ACTION_LOGIN_AUTO);
         LocalBroadcastManager.getInstance(this).sendBroadcast(autoLogin);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(DEBUG_NAME, "onPause");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
+    }
+
 }

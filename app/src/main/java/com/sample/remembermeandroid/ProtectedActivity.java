@@ -143,12 +143,13 @@ public class ProtectedActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        Log.d(DEBUG_NAME, "onStop");
+    protected void onPause() {
+        super.onPause();
+        Log.d(DEBUG_NAME, "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
-        super.onStop();
     }
+
 
     @Override
     public void onBackPressed() {

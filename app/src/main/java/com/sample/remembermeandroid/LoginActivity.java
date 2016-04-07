@@ -142,12 +142,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        Log.d(DEBUG_NAME,"onStop");
+    protected void onPause() {
+        super.onPause();
+        Log.d(DEBUG_NAME, "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginErrorReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
-        super.onStop();
     }
 
     public void alertError(final String msg) {

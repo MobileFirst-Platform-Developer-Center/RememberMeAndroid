@@ -30,10 +30,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.worklight.wlclient.api.WLAccessTokenListener;
+import com.worklight.wlclient.api.WLAuthorizationManager;
+import com.worklight.wlclient.api.WLClient;
 import com.worklight.wlclient.api.WLFailResponse;
 import com.worklight.wlclient.api.WLResourceRequest;
 import com.worklight.wlclient.api.WLResponse;
 import com.worklight.wlclient.api.WLResponseListener;
+import com.worklight.wlclient.auth.AccessToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,29 +50,29 @@ public class ProtectedActivity extends AppCompatActivity {
     private ProtectedActivity _this;
     private Button getBalanceButton, logoutButton;
     private TextView resultTextView, helloLabel;
-    private BroadcastReceiver logoutReceiver, loginRequiredReceiver;
+    private BroadcastReceiver logoutReceiver, loginRequiredReceiver, loginSuccessReceiver;
     private final String DEBUG_NAME = "ProtectedActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_protected);
+        Log.d(DEBUG_NAME, "onCreate");
 
         _this = this;
+
+        //Initialize the MobileFirst SDK. This needs to happen just once.
+        WLClient.createInstance(this);
+
+        //Initialize the challenge handler
+        UserLoginChallengeHandler.createAndRegister();
+        Log.d(DEBUG_NAME, "createAndRegister UserLoginChallengeHandler");
+
+        setContentView(R.layout.activity_protected);
 
         getBalanceButton = (Button)findViewById(R.id.getBalance);
         logoutButton = (Button)findViewById(R.id.logout);
         resultTextView = (TextView)findViewById(R.id.resultText);
         helloLabel = (TextView)findViewById(R.id.helloLabel);
-
-        //Show the display name
-        try {
-            SharedPreferences preferences = _this.getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
-            JSONObject user = new JSONObject(preferences.getString(Constants.PREFERENCES_KEY_USER,null));
-            helloLabel.setText("Hello " + user.getString("displayName"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         getBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,8 +113,7 @@ public class ProtectedActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(DEBUG_NAME, "logoutReceiver");
-                Intent start = new Intent(_this, StartActivity.class);
-                start.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent start = new Intent(_this, LoginActivity.class);
                 _this.startActivity(start);
             }
         };
@@ -123,6 +126,28 @@ public class ProtectedActivity extends AppCompatActivity {
                 _this.startActivity(login);
             }
         };
+
+        loginSuccessReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(DEBUG_NAME, "loginSuccessReceiver");
+                updateUI();
+            }
+        };
+
+
+        // Obtain Access Token
+        WLAuthorizationManager.getInstance().obtainAccessToken("UserLogin", new WLAccessTokenListener() {
+            @Override
+            public void onSuccess(AccessToken accessToken) {
+                Log.d("UserLogin", "auto login success");
+            }
+
+            @Override
+            public void onFailure(WLFailResponse wlFailResponse) {
+                Log.d("UserLogin", "auto login failure");
+            }
+        });
     }
 
     public void updateTextView(final String str){
@@ -136,10 +161,12 @@ public class ProtectedActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Log.d(DEBUG_NAME, "onStart");
         super.onStart();
+        Log.d(DEBUG_NAME, "onStart");
+
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter(Constants.ACTION_LOGOUT_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_REQUIRED));
+        updateUI();
     }
 
     @Override
@@ -148,6 +175,7 @@ public class ProtectedActivity extends AppCompatActivity {
         Log.d(DEBUG_NAME, "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
     }
 
 
@@ -168,4 +196,16 @@ public class ProtectedActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void updateUI(){
+        //Show the display name
+        SharedPreferences preferences = _this.getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        if(preferences.getString(Constants.PREFERENCES_KEY_USER,null) != null){
+            try {
+                JSONObject user = new JSONObject(preferences.getString(Constants.PREFERENCES_KEY_USER,null));
+                helloLabel.setText("Hello " + user.getString("displayName"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

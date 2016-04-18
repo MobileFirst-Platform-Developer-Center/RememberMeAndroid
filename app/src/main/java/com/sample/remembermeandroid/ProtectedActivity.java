@@ -70,9 +70,16 @@ public class ProtectedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_protected);
 
         getBalanceButton = (Button)findViewById(R.id.getBalance);
+        getBalanceButton.setVisibility(View.INVISIBLE);
+
         logoutButton = (Button)findViewById(R.id.logout);
+        logoutButton.setVisibility(View.INVISIBLE);
+
         resultTextView = (TextView)findViewById(R.id.resultText);
+        resultTextView.setVisibility(View.INVISIBLE);
+
         helloLabel = (TextView)findViewById(R.id.helloLabel);
+        helloLabel.setVisibility(View.INVISIBLE);
 
         getBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +171,7 @@ public class ProtectedActivity extends AppCompatActivity {
         super.onStart();
         Log.d(DEBUG_NAME, "onStart");
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(loginSuccessReceiver, new IntentFilter(Constants.ACTION_LOGIN_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter(Constants.ACTION_LOGOUT_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_REQUIRED));
         updateUI();
@@ -206,6 +214,10 @@ public class ProtectedActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            getBalanceButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.VISIBLE);
+            resultTextView.setVisibility(View.VISIBLE);
+            helloLabel.setVisibility(View.VISIBLE);
         }
     }
 }

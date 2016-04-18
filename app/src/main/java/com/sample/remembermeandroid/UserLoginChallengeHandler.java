@@ -49,12 +49,6 @@ public class UserLoginChallengeHandler extends WLChallengeHandler {
         context = WLClient.getInstance().getContext();
         broadcastManager = LocalBroadcastManager.getInstance(context);
 
-        //Reset the current user
-        SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(Constants.PREFERENCES_KEY_USER);
-        editor.commit();
-
         //Receive auto-login requests
         broadcastManager.registerReceiver(new BroadcastReceiver() {
             @Override
@@ -203,6 +197,14 @@ public class UserLoginChallengeHandler extends WLChallengeHandler {
             @Override
             public void onSuccess() {
                 Log.d(securityCheckName, "Logout Success");
+
+                // Remove current user
+                SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.remove(Constants.PREFERENCES_KEY_USER);
+                editor.commit();
+                Log.d(securityCheckName, "Current user removed...");
+
                 Intent intent = new Intent();
                 intent.setAction(Constants.ACTION_LOGOUT_SUCCESS);
                 broadcastManager.sendBroadcast(intent);

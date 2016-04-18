@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(DEBUG_NAME, "loginSuccessReceiver");
-                //Go to the protected area
+                // Return to the protected area
                 finish();
             }
         };
@@ -168,4 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         };
         _this.runOnUiThread(run);
     }
+
+    @Override
+    public void onBackPressed() {}
 }

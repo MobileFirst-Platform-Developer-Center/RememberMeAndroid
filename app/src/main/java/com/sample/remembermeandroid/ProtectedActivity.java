@@ -110,6 +110,7 @@ public class ProtectedActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateTextView("");
                 Intent intent = new Intent();
                 intent.setAction(Constants.ACTION_LOGOUT);
                 LocalBroadcastManager.getInstance(_this).sendBroadcast(intent);

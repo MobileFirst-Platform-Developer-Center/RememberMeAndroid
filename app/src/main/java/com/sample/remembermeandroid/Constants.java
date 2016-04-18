@@ -17,8 +17,6 @@ package com.sample.remembermeandroid;
 
 public class Constants {
     static final String ACTION_LOGIN = "com.sample.userauthandroid.broadcast.login";
-    static final String ACTION_LOGIN_AUTO = "com.sample.userauthandroid.broadcast.login.auto";
-    static final String ACTION_LOGIN_AUTO_SUCCESS = "com.sample.userauthandroid.broadcast.login.auto.success";
     static final String ACTION_LOGIN_SUCCESS = "com.sample.userauthandroid.broadcast.login.success";
     static final String ACTION_LOGIN_FAILURE = "com.sample.userauthandroid.broadcast.login.failure";
     static final String ACTION_LOGIN_REQUIRED = "com.sample.userauthandroid.broadcast.login.required";

@@ -23,14 +23,12 @@ import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.worklight.wlclient.api.WLAccessTokenListener;
 import com.worklight.wlclient.api.WLAuthorizationManager;
 import com.worklight.wlclient.api.WLClient;
 import com.worklight.wlclient.api.WLFailResponse;
 import com.worklight.wlclient.api.WLLoginResponseListener;
 import com.worklight.wlclient.api.WLLogoutResponseListener;
 import com.worklight.wlclient.api.challengehandler.WLChallengeHandler;
-import com.worklight.wlclient.auth.AccessToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,14 +46,6 @@ public class UserLoginChallengeHandler extends WLChallengeHandler {
         super(securityCheckName);
         context = WLClient.getInstance().getContext();
         broadcastManager = LocalBroadcastManager.getInstance(context);
-
-        //Receive auto-login requests
-        broadcastManager.registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                autoLogin();
-            }
-        },new IntentFilter(Constants.ACTION_LOGIN_AUTO));
 
         //Receive login requests
         broadcastManager.registerReceiver(new BroadcastReceiver() {
@@ -173,23 +163,6 @@ public class UserLoginChallengeHandler extends WLChallengeHandler {
                 }
             });
         }
-    }
-
-    public void autoLogin(){
-        WLAuthorizationManager.getInstance().obtainAccessToken(securityCheckName, new WLAccessTokenListener() {
-            @Override
-            public void onSuccess(AccessToken accessToken) {
-                Log.d(securityCheckName, "auto login success");
-                Intent intent = new Intent();
-                intent.setAction(Constants.ACTION_LOGIN_AUTO_SUCCESS);
-                broadcastManager.sendBroadcast(intent);
-            }
-
-            @Override
-            public void onFailure(WLFailResponse wlFailResponse) {
-                Log.d(securityCheckName, "auto login failure");
-            }
-        });
     }
 
     public void logout(){

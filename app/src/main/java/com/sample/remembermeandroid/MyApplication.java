@@ -26,5 +26,7 @@ public class MyApplication extends Application {
         super.onCreate();
         //Initialize the MobileFirst SDK. This needs to happen just once.
         WLClient.createInstance(this);
+        //Initialize the challenge handler
+        UserLoginChallengeHandler.createAndRegister();
     }
 }

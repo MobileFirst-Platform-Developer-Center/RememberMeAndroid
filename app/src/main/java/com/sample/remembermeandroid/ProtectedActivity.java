@@ -60,10 +60,6 @@ public class ProtectedActivity extends AppCompatActivity {
 
         _this = this;
 
-        //Initialize the challenge handler
-        UserLoginChallengeHandler.createAndRegister();
-        Log.d(DEBUG_NAME, "createAndRegister UserLoginChallengeHandler");
-
         setContentView(R.layout.activity_protected);
 
         getBalanceButton = (Button)findViewById(R.id.getBalance);

@@ -60,9 +60,6 @@ public class ProtectedActivity extends AppCompatActivity {
 
         _this = this;
 
-        //Initialize the MobileFirst SDK. This needs to happen just once.
-        WLClient.createInstance(this);
-
         //Initialize the challenge handler
         UserLoginChallengeHandler.createAndRegister();
         Log.d(DEBUG_NAME, "createAndRegister UserLoginChallengeHandler");

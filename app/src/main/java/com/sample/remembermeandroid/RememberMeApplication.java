@@ -19,7 +19,7 @@ import android.app.Application;
 
 import com.worklight.wlclient.api.WLClient;
 
-public class MyApplication extends Application {
+public class RememberMeApplication extends Application {
 
     @Override
     public void onCreate() {

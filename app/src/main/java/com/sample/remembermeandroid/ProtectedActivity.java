@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.worklight.wlclient.api.WLAccessTokenListener;
 import com.worklight.wlclient.api.WLAuthorizationManager;
-import com.worklight.wlclient.api.WLClient;
 import com.worklight.wlclient.api.WLFailResponse;
 import com.worklight.wlclient.api.WLResourceRequest;
 import com.worklight.wlclient.api.WLResponse;
@@ -204,7 +203,7 @@ public class ProtectedActivity extends AppCompatActivity {
         if(preferences.getString(Constants.PREFERENCES_KEY_USER,null) != null){
             try {
                 JSONObject user = new JSONObject(preferences.getString(Constants.PREFERENCES_KEY_USER,null));
-                helloLabel.setText("Hello " + user.getString("displayName"));
+                helloLabel.setText(getString(R.string.hello_user, user.getString("displayName")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

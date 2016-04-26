@@ -49,7 +49,7 @@ public class ProtectedActivity extends AppCompatActivity {
     private ProtectedActivity _this;
     private Button getBalanceButton, logoutButton;
     private TextView resultTextView, helloLabel;
-    private BroadcastReceiver logoutReceiver, loginRequiredReceiver, loginSuccessReceiver;
+    private BroadcastReceiver logoutReceiver, loginRequiredReceiver, loginSuccessReceiver, loginFailureReceiver;
     private final String DEBUG_NAME = "ProtectedActivity";
 
     @Override
@@ -113,8 +113,7 @@ public class ProtectedActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(DEBUG_NAME, "logoutReceiver");
-                Intent start = new Intent(_this, LoginActivity.class);
-                _this.startActivity(start);
+                showLoginScreen();
             }
         };
 
@@ -122,8 +121,7 @@ public class ProtectedActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(DEBUG_NAME, "loginRequiredReceiver");
-                Intent login = new Intent(_this, LoginActivity.class);
-                _this.startActivity(login);
+                showLoginScreen();
             }
         };
 
@@ -132,6 +130,14 @@ public class ProtectedActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 Log.d(DEBUG_NAME, "loginSuccessReceiver");
                 updateUI();
+            }
+        };
+
+        loginFailureReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(DEBUG_NAME, "loginFailureReceiver");
+                showLoginScreen();
             }
         };
 
@@ -150,6 +156,12 @@ public class ProtectedActivity extends AppCompatActivity {
         });
     }
 
+    private void showLoginScreen() {
+        Intent login = new Intent(_this, LoginActivity.class);
+        _this.startActivity(login);
+    }
+
+
     public void updateTextView(final String str){
         Runnable run = new Runnable() {
             public void run() {
@@ -167,6 +179,8 @@ public class ProtectedActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(loginSuccessReceiver, new IntentFilter(Constants.ACTION_LOGIN_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter(Constants.ACTION_LOGOUT_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(loginRequiredReceiver, new IntentFilter(Constants.ACTION_LOGIN_REQUIRED));
+        LocalBroadcastManager.getInstance(this).registerReceiver(loginFailureReceiver, new IntentFilter(Constants.ACTION_LOGIN_FAILURE));
+
         updateUI();
     }
 
@@ -177,6 +191,7 @@ public class ProtectedActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginRequiredReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loginSuccessReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loginFailureReceiver);
     }
 
 
